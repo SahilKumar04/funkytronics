@@ -7,6 +7,8 @@ import { Rating } from 'primereact/rating';
 import { Tag } from 'primereact/tag';
 import { Dropdown } from 'primereact/dropdown';
 import { Skeleton } from 'primereact/skeleton';
+import { useDispatch } from 'react-redux';
+import { addToCart } from '@/store/cartSlice.js';
 
 export default function Product() {
     const [products, setProducts] = useState([]);
@@ -19,6 +21,7 @@ export default function Product() {
         { label: 'Price High to Low', value: '!price' },
         { label: 'Price Low to High', value: 'price' }
     ];
+    const dispatch = useDispatch();
 
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data));
@@ -99,7 +102,7 @@ export default function Product() {
                                 </div>
                                 <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                     <span className="text-2xl font-semibold">${product.price}</span>
-                                    <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                    <Button onClick={()=>{dispatch(addToCart(product))}} icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
                                 </div>
                             </div>
                         </div>
@@ -147,7 +150,7 @@ export default function Product() {
                             </div>
                             <div className="flex align-items-center justify-content-between">
                                 <span className="text-2xl font-semibold">${product.price}</span>
-                                <Button icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                <Button onClick={()=>{dispatch(addToCart(product))}} icon="pi pi-shopping-cart" className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
                             </div>
                         </div>
                     </div>
@@ -179,7 +182,7 @@ export default function Product() {
 
     return (
         <div className="card">
-            <DataView value={products} itemTemplate={itemTemplate} layout={layout} header={header()} sortField={sortField} sortOrder={sortOrder} />
+            <DataView value={products} itemTemplate={itemTemplate} layout={layout} header={header()} sortField={sortField} sortOrder={sortOrder} paginator paginatorPosition='bottom' rows={12} />
         </div>
     )
 }
