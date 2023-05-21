@@ -12,6 +12,7 @@ import { addToCart, removeFromCart } from '@/store/cartSlice.js';
 import { ScrollTop } from 'primereact/scrolltop';
 import { Toast } from 'primereact/toast';
 import { useRouter } from 'next/router.js';
+import { InputNumber } from 'primereact/inputnumber';
 
 export default function Product() {
     const cartItems = useSelector((state) => state.cart.cartItems);
@@ -32,15 +33,22 @@ export default function Product() {
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data));
         const timeout = setTimeout(() => {
-            // Action to execute after 5 seconds
-            console.log('Five seconds have passed!');
             setLoading(false);
-          }, 1000);
-          return () => clearTimeout(timeout); 
+        }, 1000);
+        return () => clearTimeout(timeout);
     }, []);
 
     const showSuccess = (message) => {
-        toast.current.show({severity:'info', summary: 'Success', detail:message, life: 1500});
+        toast.current.show({ severity: 'info', summary: 'Success', detail: message, life: 1500 });
+    }
+
+    const handleQtyChange = (e, product) => {
+        if (e.target.className.includes('pi-minus') || e.target.className.includes('p-inputnumber-button-down')) {
+            dispatch(removeFromCart(product.id))
+        }
+        else {
+            dispatch(addToCart(product))
+        }
     }
 
     const getSeverity = (product) => {
@@ -78,24 +86,24 @@ export default function Product() {
             <>
                 {
                     loading ? <div className="col-12">
-                    <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
-                        <Skeleton className="w-9 sm:w-16rem xl:w-10rem shadow-2 h-6rem block xl:block mx-auto border-round" />
-                        <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
-                            <div className="flex flex-column align-items-center sm:align-items-start gap-3">
-                                <Skeleton className="w-8rem border-round h-2rem" />
-                                <Skeleton className="w-6rem border-round h-1rem" />
-                                <div className="flex align-items-center gap-3">
+                        <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
+                            <Skeleton className="w-9 sm:w-16rem xl:w-10rem shadow-2 h-6rem block xl:block mx-auto border-round" />
+                            <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
+                                <div className="flex flex-column align-items-center sm:align-items-start gap-3">
+                                    <Skeleton className="w-8rem border-round h-2rem" />
                                     <Skeleton className="w-6rem border-round h-1rem" />
-                                    <Skeleton className="w-3rem border-round h-1rem" />
+                                    <div className="flex align-items-center gap-3">
+                                        <Skeleton className="w-6rem border-round h-1rem" />
+                                        <Skeleton className="w-3rem border-round h-1rem" />
+                                    </div>
+                                </div>
+                                <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
+                                    <Skeleton className="w-4rem border-round h-2rem" />
+                                    <Skeleton shape="circle" className="w-3rem h-3rem" />
                                 </div>
                             </div>
-                            <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
-                                <Skeleton className="w-4rem border-round h-2rem" />
-                                <Skeleton shape="circle" className="w-3rem h-3rem" />
-                            </div>
                         </div>
-                    </div>
-                </div> : <div className="col-12">
+                    </div> : <div className="col-12">
                         <div className="flex flex-column xl:flex-row xl:align-items-start p-4 gap-4">
                             <img className="w-9 sm:w-16rem xl:w-10rem shadow-2 block xl:block mx-auto border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.name} />
                             <div className="flex flex-column sm:flex-row justify-content-between align-items-center xl:align-items-start flex-1 gap-4">
@@ -112,7 +120,12 @@ export default function Product() {
                                 </div>
                                 <div className="flex sm:flex-column align-items-center sm:align-items-end gap-3 sm:gap-2">
                                     <span className="text-2xl font-semibold">${product.price}</span>
-                                    <Button onClick={()=>{showSuccess(cartItems.find(item => item.id === product.id)? `${product.name} removed from cart`: `${product.name} added to cart`); cartItems.find(item => item.id === product.id) ? dispatch(removeFromCart(product.id)): dispatch(addToCart(product))}} icon={`pi ${cartItems.find(item => item.id === product.id) ? "pi-check":"pi-shopping-cart"}`} className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                    {cartItems.find(item => item.id === product.id) ? <div className="card flex justify-content-center">
+                                        <InputNumber value={cartItems.find(item => item.id === product.id).quantity} onClick={e => handleQtyChange(e, product)} showButtons buttonLayout="horizontal"
+                                            decrementButtonClassName="p-button" incrementButtonClassName="p-button" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" />
+                                    </div> :
+                                        <Button onClick={() => { showSuccess(cartItems.find(item => item.id === product.id) ? `${product.name} removed from cart` : `${product.name} added to cart`); cartItems.find(item => item.id === product.id) ? dispatch(removeFromCart(product.id)) : dispatch(addToCart(product)) }} icon={`pi ${cartItems.find(item => item.id === product.id) ? "pi-check" : "pi-shopping-cart"}`} className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -129,22 +142,22 @@ export default function Product() {
             <>
                 {
                     loading ? <div className="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
-                    <div className="p-4 border-1 surface-border surface-card border-round">
-                        <div className="flex flex-wrap align-items-center justify-content-between gap-2">
-                            <Skeleton className="w-6rem border-round h-1rem" />
-                            <Skeleton className="w-3rem border-round h-1rem" />
+                        <div className="p-4 border-1 surface-border surface-card border-round">
+                            <div className="flex flex-wrap align-items-center justify-content-between gap-2">
+                                <Skeleton className="w-6rem border-round h-1rem" />
+                                <Skeleton className="w-3rem border-round h-1rem" />
+                            </div>
+                            <div className="flex flex-column align-items-center gap-3 py-5">
+                                <Skeleton className="w-9 shadow-2 border-round h-10rem" />
+                                <Skeleton className="w-8rem border-round h-2rem" />
+                                <Skeleton className="w-6rem border-round h-1rem" />
+                            </div>
+                            <div className="flex align-items-center justify-content-between">
+                                <Skeleton className="w-4rem border-round h-2rem" />
+                                <Skeleton shape="circle" className="w-3rem h-3rem" />
+                            </div>
                         </div>
-                        <div className="flex flex-column align-items-center gap-3 py-5">
-                            <Skeleton className="w-9 shadow-2 border-round h-10rem" />
-                            <Skeleton className="w-8rem border-round h-2rem" />
-                            <Skeleton className="w-6rem border-round h-1rem" />
-                        </div>
-                        <div className="flex align-items-center justify-content-between">
-                            <Skeleton className="w-4rem border-round h-2rem" />
-                            <Skeleton shape="circle" className="w-3rem h-3rem" />
-                        </div>
-                    </div>
-                </div> : <div className="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
+                    </div> : <div className="col-12 sm:col-6 lg:col-12 xl:col-3 p-2">
                         <div className="p-4 border-1 surface-border surface-card border-round">
                             <div className="flex flex-wrap align-items-center justify-content-between gap-2">
                                 <div className="flex align-items-center gap-2">
@@ -153,14 +166,20 @@ export default function Product() {
                                 </div>
                                 <Tag value={product.inventoryStatus} severity={getSeverity(product)}></Tag>
                             </div>
-                            <div className="flex flex-column align-items-center gap-3 py-5" onClick={()=> router.push(`/product_detail?productId=${product.id}`)}>
+                            <div className="flex flex-column align-items-center gap-3 py-5" onClick={() => router.push(`/product_detail?productId=${product.id}`)}>
                                 <img className="w-9 shadow-2 border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.name} />
                                 <div className="text-2xl font-bold">{product.name}</div>
                                 <Rating value={product.rating} readOnly cancel={false}></Rating>
                             </div>
                             <div className="flex align-items-center justify-content-between">
                                 <span className="text-2xl font-semibold">${product.price}</span>
-                                <Button onClick={()=>{showSuccess(cartItems.find(item => item.id === product.id)? `${product.name} removed from cart`: `${product.name} added to cart`); cartItems.find(item => item.id === product.id) ? dispatch(removeFromCart(product.id)): dispatch(addToCart(product))}} icon={`pi ${cartItems.find(item => item.id === product.id) ? "pi-check":"pi-shopping-cart"}`} className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                {cartItems.find(item => item.id === product.id) ? <div className="card flex justify-content-center">
+                                    <InputNumber value={cartItems.find(item => item.id === product.id).quantity} onClick={e => handleQtyChange(e, product)} showButtons buttonLayout="horizontal"
+                                        decrementButtonClassName="p-button" incrementButtonClassName="p-button" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" />
+                                </div> :
+                                    <Button onClick={() => { showSuccess(cartItems.find(item => item.id === product.id) ? `${product.name} removed from cart` : `${product.name} added to cart`); cartItems.find(item => item.id === product.id) ? dispatch(removeFromCart(product.id)) : dispatch(addToCart(product)) }} icon={`pi ${cartItems.find(item => item.id === product.id) ? "pi-check" : "pi-shopping-cart"}`} className="p-button-rounded" disabled={product.inventoryStatus === 'OUTOFSTOCK'}></Button>
+                                }
+
                             </div>
                         </div>
                     </div>
