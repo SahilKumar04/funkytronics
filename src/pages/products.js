@@ -11,6 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { addToCart, removeFromCart } from '@/store/cartSlice.js';
 import { ScrollTop } from 'primereact/scrolltop';
 import { Toast } from 'primereact/toast';
+import { useRouter } from 'next/router.js';
 
 export default function Product() {
     const cartItems = useSelector((state) => state.cart.cartItems);
@@ -26,6 +27,7 @@ export default function Product() {
         { label: 'Price Low to High', value: 'price' }
     ];
     const dispatch = useDispatch();
+    const router = useRouter();
 
     useEffect(() => {
         ProductService.getProducts().then((data) => setProducts(data));
@@ -151,7 +153,7 @@ export default function Product() {
                                 </div>
                                 <Tag value={product.inventoryStatus} severity={getSeverity(product)}></Tag>
                             </div>
-                            <div className="flex flex-column align-items-center gap-3 py-5">
+                            <div className="flex flex-column align-items-center gap-3 py-5" onClick={()=> router.push(`/product_detail?productId=${product.id}`)}>
                                 <img className="w-9 shadow-2 border-round" src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`} alt={product.name} />
                                 <div className="text-2xl font-bold">{product.name}</div>
                                 <Rating value={product.rating} readOnly cancel={false}></Rating>
