@@ -47,8 +47,6 @@ export default function Navbar() {
         setValue(newTheme);
     };
 
-    
-
     useEffect(() => {
         setItems([
             {
@@ -74,7 +72,7 @@ export default function Navbar() {
         <i className='pi pi-fw pi-power-off' onClick={() => user ? auth.signOut(): router.push('/login')}></i>
         
         <div className="card flex justify-content-center">
-            <SelectButton value={value} onChange={(e) => { e.value && handleThemeChange(e.value) }} options={options} />
+            {value === 'saga-orange'? <i className='pi pi-sun' onClick={() => handleThemeChange(options[1])}/>:<i className='pi pi-moon' onClick={() => handleThemeChange(options[0])}/>}
         </div>
     </div>
 
