@@ -21,14 +21,7 @@ const ProductDetail = () => {
     useEffect(() => {
         {productId && setProduct(ProductService.getProductsData().filter(product => product.id === productId)[0])}
     }, [router.query])
-    useEffect(() => {
-        const checkedRadio = document.querySelector("input[name=pack_size]:checked");
-        if (checkedRadio) {
-            const selectedDivKey = checkedRadio.value;
-            setSelectedDiv(selectedDivKey);
-        }
-    }, []);
-
+    
     return (
         <>
         <Toast ref={toast} />
