@@ -5,6 +5,7 @@ import { PersistGate } from "redux-persist/integration/react";
 import { persistStore } from "redux-persist";
 import { Provider } from "react-redux";
 import { wrapper } from "@/store/store";
+import './globals.css'
 
 import Navbar from "../../components/Navbar";
 

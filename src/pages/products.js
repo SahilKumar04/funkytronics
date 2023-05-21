@@ -173,7 +173,7 @@ export default function Product() {
                             </div>
                             <div className="flex align-items-center justify-content-between">
                                 <span className="text-2xl font-semibold">${product.price}</span>
-                                {cartItems.find(item => item.id === product.id) ? <div className="card flex justify-content-center">
+                                {cartItems.find(item => item.id === product.id) ? <div className="card flex justify-content-center flex-row">
                                     <InputNumber value={cartItems.find(item => item.id === product.id).quantity} onClick={e => handleQtyChange(e, product)} showButtons buttonLayout="horizontal"
                                         decrementButtonClassName="p-button" incrementButtonClassName="p-button" incrementButtonIcon="pi pi-plus" decrementButtonIcon="pi pi-minus" />
                                 </div> :

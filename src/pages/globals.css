@@ -1,0 +1,8 @@
+/* @tailwind base;
+@tailwind components;
+@tailwind utilities; */
+
+.p-inputnumber-buttons-horizontal .p-inputnumber-input {
+  width: 2.3rem;
+  text-align: center;
+}

@@ -64,9 +64,10 @@ export default function Navbar() {
 
     const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2"></img>;
     // const end = <InputText placeholder="Search" type="text" className="w-full" />;
-    const end = <div className='flex justify-center items-center gap-1'><i className="pi pi-shopping-cart p-overlay-badge" style={{ fontSize: '1.5rem', marginRight: "20px" }}>
-        <Badge value={`${cartItems.length}`} ></Badge>
-    </i>
+    const end = <div className='flex justify-center items-center gap-1'>
+        <i className="pi pi-shopping-cart p-overlay-badge" onClick={() => router.push('/cart')} style={{ fontSize: '1.5rem', marginRight: "20px" }}>
+            <Badge value={`${cartItems.length}`} ></Badge>
+        </i>
         <Avatar className="p-overlay-badge" onClick={() => router.push('/profile')} image="https://www.gravatar.com/avatar/05dfd4b41340d09cae045235eb0893c3?d=mp" size="circle">
         </Avatar>
         <i className='pi pi-fw pi-power-off' onClick={() => user ? auth.signOut(): router.push('/login')}></i>
