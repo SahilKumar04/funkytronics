@@ -1,7 +1,7 @@
 'use client'
 import React, { useState, useEffect } from 'react';
 import { Galleria } from 'primereact/galleria';
-import { PhotoService } from '../app/crousal_photos';
+import { PhotoService } from '../../public/crousal_photos';
 
 export default function Home() {
     const [images, setImages] = useState(null);

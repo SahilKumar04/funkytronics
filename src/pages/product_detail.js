@@ -4,7 +4,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'primereact/toast';
 import { addToCart, removeFromCart } from '@/store/cartSlice';
-import { ProductService } from './data.js';
+import { ProductService } from '../../public/data.js';
 import { useRouter } from 'next/router';
 import { InputNumber } from 'primereact/inputnumber';
 
