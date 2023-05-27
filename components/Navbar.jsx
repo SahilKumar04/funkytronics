@@ -78,7 +78,7 @@ export default function Navbar() {
     </div>
 
     return (
-        <div className="card sticky top-0">
+        <div className="card sticky top-0" style={{zIndex: 99}}>
             <Menubar model={items} start={start} end={end} className='items-center' />
         </div>
     )

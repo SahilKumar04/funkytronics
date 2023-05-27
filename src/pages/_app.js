@@ -13,7 +13,6 @@ function MyApp({ Component, pageProps, ...rest }) {
   const { store, props } = wrapper.useWrappedStore(rest);
   const persistor = persistStore(store);
 
-
   return (<>
     <Provider store={store}>
       <PersistGate persistor={persistor}>
