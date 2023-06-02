@@ -1,14 +1,13 @@
 
 import React, { useEffect, useState } from 'react';
 import { Menubar } from 'primereact/menubar';
-import { InputText } from 'primereact/inputtext';
 import { Badge } from 'primereact/badge';
 import { useSelector } from 'react-redux';
 import { Avatar } from 'primereact/avatar';
-import { SelectButton } from 'primereact/selectbutton';
 import { auth } from '../setup/firebase'
 import { useRouter } from 'next/router';
 import {useAuthState} from 'react-firebase-hooks/auth';
+import { resetUser } from '@/store/userSlice';
 
 export default function Navbar() {
     const cartItems = useSelector((state) => state.cart.cartItems);
@@ -62,6 +61,11 @@ export default function Navbar() {
         ])
     }, [])
 
+    const logOut = () => {
+        auth.signOut();
+        resetUser();
+    }
+
     const start = <img alt="logo" src="https://primefaces.org/cdn/primereact/images/logo.png" height="40" className="mr-2"></img>;
     // const end = <InputText placeholder="Search" type="text" className="w-full" />;
     const end = <div className='flex justify-center items-center gap-1'>
@@ -70,7 +74,7 @@ export default function Navbar() {
         </i>
         <Avatar className="p-overlay-badge" onClick={() => router.push('/profile')} image="https://www.gravatar.com/avatar/05dfd4b41340d09cae045235eb0893c3?d=mp" size="circle">
         </Avatar>
-        <i className='pi pi-fw pi-power-off' onClick={() => user ? auth.signOut(): router.push('/login')}></i>
+        <i className='pi pi-fw pi-power-off' onClick={() => user? logOut() : router.push("/login")}></i>
         
         <div className="card flex justify-content-center">
             {value === 'saga-orange'? <i className='pi pi-sun' onClick={() => handleThemeChange(options[1])}/>:<i className='pi pi-moon' onClick={() => handleThemeChange(options[0])}/>}

@@ -1,10 +1,31 @@
 import mongoose from 'mongoose';
 
+const AddressSchema = new mongoose.Schema({
+  addressLine: {
+    type: String,
+    trim: true
+  },
+  city: {
+    type: String,
+    trim: true
+  },
+  state: {
+    type: String,
+    trim: true
+  },
+  pinCode: {
+    type: String,
+    trim: true
+  },
+  country: {
+    type: String,
+    trim: true
+  },
+})
 const userSchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      lowercase: true,
       trim: true,
     },
     userId: {
@@ -44,17 +65,12 @@ const userSchema = new mongoose.Schema(
       required: true,
       lowercase: true,
     },
-    address: [
-      {
-        type: String,
-        trim: true,
-        lowercase: true,
-      },
-    ],
+    address: {
+      type: [AddressSchema],
+      default: undefined
+    },
     currentAddress: {
-      type: String,
-      trim: true,
-      lowercase: true,
+      type: Object
     },
   },
   {

@@ -6,7 +6,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import { useDispatch } from 'react-redux';
-import { setAddress, setEmail, setGender, setName, setUserId, setAge } from '@/store/userSlice';
+import { setAddress, setEmail, setGender, setName, setUserId, setAge, setUId, setCurrentAddress } from '@/store/userSlice';
 
 const Login = () => {
   const [user, setUser] = useAuthState(auth);
@@ -30,6 +30,8 @@ const Login = () => {
       dispatch(setAge(user.age))
       dispatch(setUserId(result.user.uid))
       dispatch(setAddress(user.address))
+      dispatch(setCurrentAddress(user.currentAddress))
+      dispatch(setUId(user._id))
       router.push('/');
     }
   };
