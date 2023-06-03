@@ -4,10 +4,11 @@ import { persistReducer } from 'redux-persist';
 import storage from "redux-persist/lib/storage";
 import thunk from 'redux-thunk';
 import {cartSlice} from "./cartSlice";
-
+import {userSlice} from "./userSlice";
 
 const rootReducer = combineReducers({
   [cartSlice.name]:cartSlice.reducer,
+  [userSlice.name]:userSlice.reducer
 })
 
 

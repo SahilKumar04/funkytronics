@@ -1,14 +1,17 @@
 import { addToCart, removeFromCart } from '@/store/cartSlice';
+import { useRouter } from 'next/router';
 import { Button } from 'primereact/button';
 import { DataView } from 'primereact/dataview';
 import { InputNumber } from 'primereact/inputnumber';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 const Cart = () => {
   const cartItems = useSelector((state) => state.cart.cartItems);
   const total = useSelector((state) => state.cart.totalAmount);
+  const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const router = useRouter();
   const handleQtyChange = (e, product) => {
     if (
       e.target.className.includes('pi-minus') ||
@@ -91,6 +94,12 @@ const Cart = () => {
       </div>
     </>
   }
+
+  useEffect(() => {
+    if(!user.currentAddress || user.address.length == 0) {
+      router.push('/add_address');
+    }
+  }, [])
 
   return (
     <div>
