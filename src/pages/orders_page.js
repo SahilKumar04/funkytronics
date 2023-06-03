@@ -1,32 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Transition } from 'react-transition-group';
-import 'tailwindcss/tailwind.css';
+import { TabView, TabPanel } from 'primereact/tabview';
+import { Button } from 'primereact/button';
+import { Card } from 'primereact/card';
 
 const OpenOrders = () => {
-    const [orders, setOrders] = React.useState([
-      { id: "jsyusebufbuwyrwrwy", status: 'Pending', customerName: 'John Doe',deliveryDate: "20/05/2023" , orderDate: "25/05/2023",price:150 ,productName : "Watch"},
-      { id: "aknkfnjn632r65t87y", status: 'Confirmed', customerName: 'Jane Smith' ,deliveryDate: "20/05/2023" , orderDate: "25/05/2023",price:150, productName :"Oppo reno 5T"},
-    ]);
-  
-    return (
-      <div>
-        {orders
-          .filter((order) => order.status === 'Pending' || order.status === 'Confirmed')
-          .map((order) => (
-            <OrderCard key={order.id} order={order} />
-          ))}
-      </div>
-    );
+  const [orders] = useState([
+    { id: "jsyusebufbuwyrwrwy", status: 'PENDING', customerName: 'John Doe', deliveryDate: "20/05/2023", orderDate: new Date().toLocaleDateString(), price: 150, productName: "Watch", paymentStatus : "CAPTURED"},
+    { id: "aknkfnjn632r65t87y", status: 'ACCEPTED', customerName: 'Jane Smith', deliveryDate: "20/05/2023", orderDate: new Date().toLocaleDateString(), price: 150, productName: "Oppo reno 5T", paymentStatus : "CAPTURED"},
+  ]);
+
+  return (
+    <div>
+      {orders
+        .filter((order) => order.status === 'PENDING' || order.status === 'ACCEPTED')
+        .map((order) => (
+          <OrderCard key={order.id} order={order} />
+        ))}
+    </div>
+  );
 };
-  
 
 const OrderHistory = () => {
-  const [orders, setOrders] = React.useState([
-    { id: "hfbeshbfubfuesbfdv", status: 'Delivered', customerName: 'John Doe' ,deliveryDate: "20/05/2023" , orderDate: "25/05/2023",price:150, productName : "One Plus Nord" },
-    { id: "kjncsndnu887ryw78y", status: 'Delivered', customerName: 'Jane Smith',deliveryDate: "20/05/2023" , orderDate: "25/05/2023",price:150,productName : "Apple Ipone 12"},
+  const [orders] = useState([
+    { id: "hfbeshbfubfuesbfdv", status: 'DELIVERED', customerName: 'John Doe', deliveryDate: "20/05/2023", orderDate: "25/05/2023", price: 150, productName: "One Plus Nord" , paymentStatus : "SETTLED"},
+    { id: "kjncsndnu887ryw78y", status: 'DELIVERED', customerName: 'Jane Smith', deliveryDate: "20/05/2023", orderDate: "25/05/2023", price: 150, productName: "Apple Ipone 12" , paymentStatus : "SETTLED"},
+    { id: "kjncsndnu887ryw78y", status: 'CANCELLED', customerName: 'Jane Smith', deliveryDate: "20/05/2023", orderDate: "25/05/2023", price: 150, productName: "Apple Ipone 12" , paymentStatus : "REFUNDED"},
+    { id: "kjncsndnu887ryw78y", status: 'RETURNED', customerName: 'Jane Smith', deliveryDate: "20/05/2023", orderDate: "25/05/2023", price: 150, productName: "Apple Ipone 12" , paymentStatus : "REFUNDED"},
   ]);
   // Filter delivered orders
-  const deliveredOrders = orders.filter((order) => order.status === 'Delivered');
+  const deliveredOrders = orders.filter((order) => order.status === 'DELIVERED'|| order.status === 'CANCELLED' || order.status === 'RETURNED');
 
   return (
     <div>
@@ -38,79 +41,78 @@ const OrderHistory = () => {
 };
 
 const OrderCard = ({ order }) => {
-    const [isExpanded, setIsExpanded] = React.useState(false);
-  
-    const handleToggleExpand = () => {
-      setIsExpanded(!isExpanded);
-    };
-  
-    return (
-      <div className="border border-gray-800 rounded-md shadow-lg p-4 mb-4">
-        <div className="flex items-center justify-between">
-          <div>
-            <h3 className="text-lg font-bold">Order {order.id}</h3>
-            <p className="text-gray-500 mt-2">Product Name: {order.productName}</p>
-            {order.price && (
-              <p className="text-gray-500 color-red">Price: ₹{order.price}</p>
-            )}
-            <p className="mt-2">Status: {order.status}</p>
-
-          </div>
-          <button className="text-blue-500" onClick={handleToggleExpand}>
-            {isExpanded ? 'Collapse' : 'Expand'}
-          </button>
-        </div>
-  
-        <Transition in={isExpanded} timeout={300}>
-          {(state) => (
-            <div
-              className={`overflow-hidden transition-height duration-300 ${
-                state === 'entered' ? 'h-auto' : 'h-0'
-              }`}
-            >
-              <p className="mt-2">Order Date: {order.orderDate}</p>
-              <p className="mt-2">Delivery Date: {order.deliveryDate}</p>
-            </div>
-          )}
-        </Transition>
-      </div>
-    );
-};
-
-const OrdersPage = () => {
-  const [activeTab, setActiveTab] = React.useState('open');
-
-  const handleTabChange = (tab) => {
-      setActiveTab(tab);
+  const getStatusColor = (status) => {
+    if (status === 'PENDING' || status === 'CAPTURED') {
+      return 'blue';
+    } else if (status === 'CANCELLED') {
+      return 'red';
+    } else if (status === 'ACCEPTED'){
+      return 'yellow';
+    } else if (status === 'DELIVERED' || status === 'SETTLED'){
+      return 'green';
+    } else if (status === 'RETURNED' || status === 'REFUNDED'){
+      return '#E75480';
+    }
   };
 
   return (
-      <div className="border rounded-md p-4 mb-4">
-      {/* Tab navigation */}
-      <div className="mb-8">
-          <button
-            className={`mr-4 ${
-                activeTab === 'open' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
-            } px-4 py-2 rounded`}
-            onClick={() => handleTabChange('open')}
-          >
-          Open Orders
-          </button>
-          <button
-            className={`mr-4 ${
-                activeTab === 'history' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-600'
-            } px-4 py-2 rounded`}
-            onClick={() => handleTabChange('history')}
-          >
-          Order History
-          </button>
+    <Card className="p-shadow-2 mb-4"
+        style={{
+          width: '100%',
+          transition: 'background-color 0.3s',
+          backgroundColor: 'initial',
+          cursor: 'pointer',
+          borderRadius: "20px"
+        }}
+        onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#B0E0E6')}
+        onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'initial')}
+      >
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div style={{ marginRight: '16px' }}>
+          <img src='https://loremflickr.com/320/240' alt={order.productName} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+        </div>
+        <div>
+          <h3 className="text-sm font-weight-bold">Order {order.id}</h3>
+          <p className="text-secondary mt-2" style={{ fontSize: '12px' }}>Product Name: {order.productName}</p>
+          {order.price && (
+            <p className="text-secondary" style={{ fontSize: '12px' }}>Price: ₹{order.price}</p>
+          )}
+          <p className="mt-2" style={{ fontSize: '12px' }}>
+            Status: <span style={{ color: getStatusColor(order.status), fontWeight: 'bold' }}>{order.status}</span>
+          </p>
+        </div>
+        <div style={{ marginLeft: 'auto', textAlign: 'right' }}>
+          <p className="text-secondary mt-2" style={{ fontSize: '12px' }}>Order Date: {order.orderDate}</p>
+          <p className="text-secondary" style={{ fontSize: '12px' }}>Delivery Date: {order.deliveryDate}</p>
+          <p className="text-secondary" style={{ fontSize: '12px' }}>
+            Payment Status: <span style={{ color: getStatusColor(order.paymentStatus), fontWeight: 'bold' }}>{order.paymentStatus}</span>
+          </p>
+        </div>
       </div>
-
-      {/* Render content based on active tab */}
-      {activeTab === 'open' ? <OpenOrders /> : <OrderHistory />}
-      </div>
+    </Card>
   );
 };
-  
-export default OrdersPage;
 
+const OrdersPage = () => {
+  const [activeTab, setActiveTab] = useState('open');
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
+  return (
+    <div>
+      {/* Tab navigation */}
+      <TabView activeIndex={activeTab === 'open' ? 0 : 1} onTabChange={(e) => handleTabChange(e.index === 0 ? 'open' : 'history')}>
+        <TabPanel header="Open Orders">
+          <OpenOrders />
+        </TabPanel>
+        <TabPanel header="Order History">
+          <OrderHistory />
+        </TabPanel>
+      </TabView>
+    </div>
+  );
+};
+
+export default OrdersPage;

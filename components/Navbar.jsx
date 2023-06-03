@@ -23,6 +23,8 @@ export default function Navbar() {
         }
         else if (event.item.label === "Products") {
             router.push("/products")
+        }else if (event.item.label === "Orders"){
+            router.push("/orders_page")
         }
     };
 
@@ -56,6 +58,11 @@ export default function Navbar() {
             {
                 label: 'Products',
                 icon: 'pi pi-fw pi-calendar',
+                command: handleMenuItemClick
+            },
+            {
+                label: 'Orders',
+                icon: 'pi pi-fw pi-shopping-bag',
                 command: handleMenuItemClick
             }
         ])
